@@ -87,7 +87,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
 
 
-
+    //updates quantity of same items
     @Override
     public void update(int userId, ShoppingCartItem shoppingCartItem) {
 
@@ -101,8 +101,8 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
         )
         {
-            shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
 
+            shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
             int newQuantity = shoppingCartItem.getQuantity();
             int productId   = shoppingCartItem.getProductId();
             preparedStatement.setInt(1, newQuantity);
@@ -117,8 +117,25 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         }
     }
 
+
     @Override
     public void delete(int userId) {
 
+        String sql = "DELETE FROM shopping_cart" +
+                " WHERE user_id = ?;";
+
+        try(
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        )
+        {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
+
 }
