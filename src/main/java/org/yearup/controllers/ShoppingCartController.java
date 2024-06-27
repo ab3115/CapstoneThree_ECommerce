@@ -112,5 +112,26 @@ public class ShoppingCartController {
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
+    @DeleteMapping()
+    public void deleteAllFromShoppingCart(Principal principal){
+
+        try{
+
+            String userName = principal.getName();
+            User user = userDao.getByUserName(userName);
+            int userId = user.getId();
+            ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);
+
+            if(shoppingCart == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            shoppingCartDao.delete(userId);
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
+
 
 }
