@@ -2,6 +2,7 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("cart")
 @CrossOrigin
+@PreAuthorize("hasRole('ROLE_USER')")
 public class ShoppingCartController
 {
     // a shopping cart requires
@@ -48,7 +50,11 @@ public class ShoppingCartController
             int userId = user.getId();
 
             // use the shoppingcartDao to get all items in the cart and return the cart
-            return null;
+            ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);
+            if(shoppingCart == null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            return shoppingCart;
         }
         catch(Exception e)
         {
