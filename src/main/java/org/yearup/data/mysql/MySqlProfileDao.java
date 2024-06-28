@@ -16,6 +16,30 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
     }
 
     @Override
+    public Profile getByUserId(int userId) {
+
+        String sql = "SELECT * FROM profiles WHERE user_id = ?";
+
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setInt(1,userId);
+            ResultSet row = preparedStatement.executeQuery();
+
+            if(row.next()){
+
+                Profile profile = mapRow(row);
+                return profile;
+
+            }
+
+        }
+        catch (SQLException exception){
+            throw new RuntimeException(exception);
+        }
+        return null;
+    }
+
+    @Override
     public Profile create(Profile profile)
     {
         String sql = "INSERT INTO profiles (user_id, first_name, last_name, phone, email, address, city, state, zip) " +
@@ -43,5 +67,26 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void update(int userId, Profile profile) {
+
+    }
+
+    private static Profile mapRow(ResultSet row) throws SQLException{
+
+        int userId = row.getInt("user_id");
+        String firstName = row.getString("first_name");
+        String lastName = row.getString("last_name");
+        String phone = row.getString("phone");
+        String email = row.getString("email");
+        String address = row.getString("address");
+        String city = row.getString("city");
+        String state = row.getString("state");
+        String zip = row.getString("zip");
+        return new Profile(userId,firstName,lastName,phone,email,address,city,state,zip);
+
+    }
+
 
 }
