@@ -1,7 +1,10 @@
 package org.yearup.controllers;
 
+import com.sun.net.httpserver.Authenticator;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,16 +21,18 @@ import java.util.List;
 // add annotation to allow cross site origin requests
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("categories")
 @CrossOrigin
 public class CategoriesController
 {
     private CategoryDao categoryDao;
     private ProductDao productDao;
 
+
 @Autowired
-public CategoriesController(CategoryDao categoryDao){
+public CategoriesController(CategoryDao categoryDao, ProductDao productDao){
     this.categoryDao = categoryDao;
+    this.productDao = productDao;
 
 }
     // create an Autowired controller to inject the categoryDao and ProductDao
@@ -50,6 +55,7 @@ public CategoriesController(CategoryDao categoryDao){
 
 
     @GetMapping("{id}")
+    @PreAuthorize("permitAll()")
     public Category getById(@PathVariable int id) {
         // get the category by id
 
@@ -62,7 +68,7 @@ public CategoriesController(CategoryDao categoryDao){
             return category;
         } catch (Exception e) {
 
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Oops... our bad.");
         }
     }
 
@@ -139,7 +145,8 @@ public CategoriesController(CategoryDao categoryDao){
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Oops... our bad.");
         }
     }
 }
+

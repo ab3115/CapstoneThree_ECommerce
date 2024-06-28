@@ -125,6 +125,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         {
             preparedStatement.setString(1, category.getName());
             preparedStatement.setString(2, category.getDescription());
+            preparedStatement.setInt(3,categoryId);
             preparedStatement.executeUpdate();
         }
         catch (SQLException e)

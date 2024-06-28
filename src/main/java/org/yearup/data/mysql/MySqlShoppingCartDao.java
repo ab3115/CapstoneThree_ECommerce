@@ -102,7 +102,6 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         )
         {
 
-            shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
             int newQuantity = shoppingCartItem.getQuantity();
             int productId   = shoppingCartItem.getProductId();
             preparedStatement.setInt(1, newQuantity);
